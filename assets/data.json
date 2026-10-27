@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "username": "panjiedev",
+  "generated_at": "2026-10-27T08:42:10Z",
+  "data_scope": "仅公开 GitHub 数据",
+  "contributions": [
+    {
+      "repository": "Tencent/WeKnora",
+      "merged_prs": 2,
+      "stars": 35610,
+      "pull_requests": [
+        {
+          "number": 4505,
+          "url": "https://github.com/Tencent/WeKnora/pull/4505"
+        },
+        {
+          "number": 4502,
+          "url": "https://github.com/Tencent/WeKnora/pull/4502"
+        }
+      ]
+    }
+  ],
+  "languages": {
+    "total_bytes": 62939,
+    "included_repositories": [
+      "panjiedev/job-intel-agent",
+      "panjiedev/learning"
+    ],
+    "bytes": {
+      "CSS": 488,
+      "Java": 27319,
+      "JavaScript": 559,
+      "Python": 16698,
+      "TypeScript": 17875
+    },
+    "shares": [
+      {
+        "name": "Java",
+        "bytes": 27319,
+        "percent": 43.4
+      },
+      {
+        "name": "TypeScript",
+        "bytes": 17875,
+        "percent": 28.4
+      },
+      {
+        "name": "Python",
+        "bytes": 16698,
+        "percent": 26.5
+      },
+      {
+        "name": "JavaScript",
+        "bytes": 559,
+        "percent": 0.9
+      },
+      {
+        "name": "CSS",
+        "bytes": 488,
+        "percent": 0.8
+      }
+    ]
+  },
+  "featured": [
+    {
+      "repository": "panjiedev/job-intel-agent",
+      "role": "自有项目",
+      "description": "职位分析智能体。基于 FastAPI、Next.js 与 pgvector，探索岗位情报和简历匹配。",
+      "language": "TypeScript",
+      "stars": 1,
+      "pushed_at": "2026-02-21T13:43:37Z",
+      "merged_prs": 0
+    },
+    {
+      "repository": "Tencent/WeKnora",
+      "role": "社区贡献",
+      "description": "参与关键词检索兼容与钉钉数据源同步修复，关注知识库的实际使用与可靠性。",
+      "language": "Go",
+      "stars": 35610,
+      "pushed_at": "2026-10-27T06:30:27Z",
+      "merged_prs": 2
+    }
+  ]
+}

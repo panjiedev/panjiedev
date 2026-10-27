@@ -1,0 +1,61 @@
+name: 更新个人主页
+
+on:
+  schedule:
+    # GitHub cron 使用 UTC；16:30 UTC = 次日北京时间 00:30。
+    - cron: '30 16 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - profile.json
+      - scripts/**
+      - tests/**
+      - .github/workflows/update-profile.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: profile-update
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: 检查统计与生成逻辑
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: python3 -m unittest discover -s tests -v
+
+  refresh:
+    name: 刷新公开数据并发布素材
+    needs: validate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: 获取数据并生成浅色和深色素材
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/update_profile.py
+      - name: 提交本次成功快照
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md assets/
+          if git diff --cached --quiet; then
+            echo '公开数据未改变。'
+          else
+            git commit -m 'chore: 更新个人主页公开数据 [skip ci]'
+            git push origin HEAD:main
+          fi
