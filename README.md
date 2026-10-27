@@ -17,7 +17,7 @@ AI 应用 · 知识工程 · Python · Java · TypeScript
 
 | 项目 | 已合并 PR | 项目 Star |
 | --- | --- | ---: |
-| [Tencent/WeKnora](https://github.com/Tencent/WeKnora) | [#4505](https://github.com/Tencent/WeKnora/pull/4505)、[#4502](https://github.com/Tencent/WeKnora/pull/4502) | 35,610 |
+| [Tencent/WeKnora](https://github.com/Tencent/WeKnora) | [#4505](https://github.com/Tencent/WeKnora/pull/4505)、[#4502](https://github.com/Tencent/WeKnora/pull/4502) | 35,611 |
 
 仅统计公开外部项目已合并的 PR，排除本人仓库。Star 为该项目本身的数量。
 
@@ -51,9 +51,9 @@ AI 应用 · 知识工程 · Python · Java · TypeScript
 <a href="https://github.com/Tencent/WeKnora">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/project-2-dark.svg">
-  <img src="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/project-2-light.svg" alt="Tencent/WeKnora · 社区贡献 · Star 35610" width="400">
+  <img src="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/project-2-light.svg" alt="Tencent/WeKnora · 社区贡献 · Star 35611" width="400">
 </picture>
 </a>
 </div>
 
-<sub>仅公开 GitHub 数据 · 更新于 2026-10-27 16:42 UTC+8 · 每日北京时间 00:30 自动刷新 · [维护说明](MAINTAINING.md)</sub>
+<sub>仅公开 GitHub 数据 · 更新于 2026-10-27 16:46 UTC+8 · 每日北京时间 00:30 自动刷新 · [维护说明](MAINTAINING.md)</sub>
