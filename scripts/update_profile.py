@@ -9,6 +9,7 @@ from datetime import datetime, timedelta, timezone
 from fnmatch import fnmatchcase
 from html import escape
 import json
+import hashlib
 import math
 import os
 from pathlib import Path
@@ -262,8 +263,8 @@ def project_svg(project, theme):
 
 def picture(username, name, alt, width="100%", version=""):
     base = f"https://raw.githubusercontent.com/{username}/{username}/main/assets/{name}"
-    suffix = "?" + urlencode({"v": version}) if version else ""
-    return f'<picture>\n  <source media="(prefers-color-scheme: dark)" srcset="{base}-dark.svg{suffix}">\n  <img src="{base}-light.svg{suffix}" alt="{escape(alt, quote=True)}" width="{width}">\n</picture>'
+    base += f"-{version}" if version else ""
+    return f'<picture>\n  <source media="(prefers-color-scheme: dark)" srcset="{base}-dark.svg">\n  <img src="{base}-light.svg" alt="{escape(alt, quote=True)}" width="{width}">\n</picture>'
 
 
 def render_outputs(config, data):
@@ -273,19 +274,24 @@ def render_outputs(config, data):
         outputs[f"assets/languages-{name}.svg"] = languages_svg(data, theme)
         for i, project in enumerate(data["featured"]):
             outputs[f"assets/project-{i+1}-{name}.svg"] = project_svg(project, theme)
+    versions = {}
+    for key in ["contributions", "languages"] + [f"project-{i+1}" for i in range(len(data["featured"]))]:
+        versions[key] = hashlib.sha256((outputs[f"assets/{key}-light.svg"] + outputs[f"assets/{key}-dark.svg"]).encode()).hexdigest()[:16]
+        for theme in THEMES:
+            outputs[f"assets/{key}-{versions[key]}-{theme}.svg"] = outputs.pop(f"assets/{key}-{theme}.svg")
     stamp = datetime.fromisoformat(data["generated_at"].replace("Z", "+00:00")).astimezone(BEIJING).strftime("%Y-%m-%d %H:%M UTC+8")
     username = config["username"]
-    readme = ["<!-- 此文件由 scripts/update_profile.py 生成；简介及项目请修改 profile.json。 -->", f"# 你好，我是 {username}", "", config["introduction"], "", " · ".join(config["topics"]), "", "## 开源贡献", "", picture(username, "contributions", "公开外部项目合并 PR 与项目 Star 统计", version=data["generated_at"]), "", "<details>", "<summary>查看贡献明细</summary>", "", "| 项目 | 已合并 PR | 项目 Star |", "| --- | --- | ---: |"]
+    readme = ["<!-- 此文件由 scripts/update_profile.py 生成；简介及项目请修改 profile.json。 -->", f"# 你好，我是 {username}", "", config["introduction"], "", " · ".join(config["topics"]), "", "## 开源贡献", "", picture(username, "contributions", "公开外部项目合并 PR 与项目 Star 统计", version=versions["contributions"]), "", "<details>", "<summary>查看贡献明细</summary>", "", "| 项目 | 已合并 PR | 项目 Star |", "| --- | --- | ---: |"]
     for row in data["contributions"]:
         name = row["repository"]
         links = "、".join(f"[#{p['number']}]({p['url']})" for p in row["pull_requests"])
         readme.append(f"| [{name}](https://github.com/{name}) | {links} | {row['stars']:,} |")
     if not data["contributions"]:
         readme.append("| 暂无符合统计口径的记录 | — | — |")
-    readme += ["", "仅统计公开外部项目已合并的 PR，排除本人仓库。Star 为该项目本身的数量。", "", "</details>", "", "## 公开代码语言占比", "", picture(username, "languages", "公开代码按 GitHub Languages API 字节数汇总的语言占比", version=data["generated_at"]), "", "<details>", "<summary>统计范围</summary>", "", "当前纳入：" + ("、".join(f"[`{repo}`](https://github.com/{repo})" for repo in data["languages"]["included_repositories"]) or "暂无"), "", "排除 Fork、已归档、空仓库、主页自身及 `skills-*` 课程练习。语言占比基于公开代码字节数，不代表技能熟练程度。", "", "</details>", "", "## 项目与实践", "", "<div align=\"center\">"]
+    readme += ["", "仅统计公开外部项目已合并的 PR，排除本人仓库。Star 为该项目本身的数量。", "", "</details>", "", "## 公开代码语言占比", "", picture(username, "languages", "公开代码按 GitHub Languages API 字节数汇总的语言占比", version=versions["languages"]), "", "<details>", "<summary>统计范围</summary>", "", "当前纳入：" + ("、".join(f"[`{repo}`](https://github.com/{repo})" for repo in data["languages"]["included_repositories"]) or "暂无"), "", "排除 Fork、已归档、空仓库、主页自身及 `skills-*` 课程练习。语言占比基于公开代码字节数，不代表技能熟练程度。", "", "</details>", "", "## 项目与实践", "", "<div align=\"center\">"]
     for i, project in enumerate(data["featured"]):
         name = project["repository"]
-        readme.append(f'<a href="https://github.com/{name}">\n{picture(username, f"project-{i+1}", name + " · " + project["role"] + " · Star " + str(project["stars"]), "400", version=data["generated_at"])}\n</a>')
+        readme.append(f'<a href="https://github.com/{name}">\n{picture(username, f"project-{i+1}", name + " · " + project["role"] + " · Star " + str(project["stars"]), "400", version=versions[f"project-{i+1}"])}\n</a>')
     readme += ["</div>", "", f"<sub>仅公开 GitHub 数据 · 更新于 {stamp} · 每日北京时间 00:30 自动刷新 · [维护说明](MAINTAINING.md)</sub>", ""]
     outputs["README.md"] = "\n".join(readme)
     outputs["assets/data.json"] = json.dumps(data, ensure_ascii=False, indent=2) + "\n"
@@ -307,6 +313,10 @@ def update(root=ROOT, api=None, now=None):
             target = root / name
             target.parent.mkdir(parents=True, exist_ok=True)
             os.replace(Path(temp, name), target)
+    # 仅清理本生成器的旧图片；文件保留在 Git 历史中。
+    for path in (root / "assets").glob("*.svg"):
+        if re.fullmatch(r"(?:contributions|languages|project-\d+)(?:-[0-9a-f]{16})?-(?:light|dark)\.svg", path.name) and f"assets/{path.name}" not in outputs:
+            path.unlink()
     print(f"公开数据已更新：{sum(r['merged_prs'] for r in data['contributions'])} 个合并 PR / {len(data['contributions'])} 个外部项目；{len(data['languages']['included_repositories'])} 个语言统计仓库。")
     return data
 

@@ -130,12 +130,20 @@ class ProfileTests(unittest.TestCase):
                 ET.fromstring(source)
                 self.assertNotIn("<script>", source)
         for theme in ("light", "dark"):
-            self.assertIn("Star 9,876", outputs[f"assets/project-2-{theme}.svg"])
-            self.assertIn("9,876", outputs[f"assets/contributions-{theme}.svg"])
+            self.assertIn("Star 9,876", next(value for path, value in outputs.items() if path.startswith("assets/project-2-") and path.endswith(f"-{theme}.svg")))
+            self.assertIn("9,876", next(value for path, value in outputs.items() if path.startswith("assets/contributions-") and path.endswith(f"-{theme}.svg")))
         self.assertIn("UTC+8", outputs["README.md"])
         self.assertIn("2026-10-27 16:00", outputs["README.md"])
         self.assertIn('width="400"', outputs["README.md"])
-        self.assertEqual(outputs["README.md"].count(".svg?v=2026-10-27T08%3A00%3A00Z"), 8)
+        for path, source in outputs.items():
+            if path.endswith(".svg"):
+                self.assertIn(path, outputs["README.md"])
+        changed = json.loads(json.dumps(data))
+        changed["featured"][1]["stars"] += 1
+        changed_outputs = profile.render_outputs(CONFIG, changed)
+        before = {p for p in outputs if p.startswith("assets/project-2-")}
+        after = {p for p in changed_outputs if p.startswith("assets/project-2-")}
+        self.assertTrue(before.isdisjoint(after))
 
     def test_fetch_failure_preserves_all_previous_output(self):
         class Failure(FakeAPI):
@@ -156,10 +164,15 @@ class ProfileTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
             (root / "profile.json").write_text(json.dumps(CONFIG))
+            (root / "assets").mkdir()
+            (root / "assets/contributions-light.svg").write_text("old generated image")
+            (root / "assets/manual.svg").write_text("keep unrelated image")
             data = profile.update(root, FakeAPI(), NOW)
+            self.assertFalse((root / "assets/contributions-light.svg").exists())
+            self.assertEqual((root / "assets/manual.svg").read_text(), "keep unrelated image")
             self.assertEqual(json.loads((root / "assets/data.json").read_text()), data)
-            self.assertIn("9,876", (root / "assets/contributions-light.svg").read_text())
-            self.assertIn("Star 9,876", (root / "assets/project-2-light.svg").read_text())
+            self.assertIn("9,876", next((root / "assets").glob("contributions-*-light.svg")).read_text())
+            self.assertIn("Star 9,876", next((root / "assets").glob("project-2-*-light.svg")).read_text())
 
     def test_daily_schedule_is_beijing_half_past_midnight(self):
         workflow = (ROOT / ".github/workflows/update-profile.yml").read_text()

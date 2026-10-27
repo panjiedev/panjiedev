@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "username": "panjiedev",
-  "generated_at": "2026-10-27T08:48:51Z",
+  "generated_at": "2026-10-27T08:50:47Z",
   "data_scope": "仅公开 GitHub 数据",
   "contributions": [
     {
       "repository": "Tencent/WeKnora",
       "merged_prs": 2,
-      "stars": 35612,
+      "stars": 35614,
       "pull_requests": [
         {
           "number": 4505,
@@ -76,7 +76,7 @@
       "role": "社区贡献",
       "description": "参与关键词检索兼容与钉钉数据源同步修复，关注知识库的实际使用与可靠性。",
       "language": "Go",
-      "stars": 35612,
+      "stars": 35614,
       "pushed_at": "2026-10-27T06:30:27Z",
       "merged_prs": 2
     }
