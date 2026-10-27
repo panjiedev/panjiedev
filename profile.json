@@ -1,19 +1,25 @@
 {
   "username": "panjiedev",
-  "introduction": "关注 AI 应用、RAG 知识库与工程实践。",
-  "topics": ["AI 应用", "知识工程", "Python · Java · TypeScript"],
-  "language_exclude_patterns": ["skills-*"],
+  "introduction": "Building practical AI applications and reliable knowledge systems.",
+  "topics": [
+    "Applied AI",
+    "RAG & Knowledge Systems",
+    "Python · Java · TypeScript"
+  ],
+  "language_exclude_patterns": [
+    "skills-*"
+  ],
   "max_contribution_rows": 10,
   "featured": [
     {
       "repository": "panjiedev/job-intel-agent",
-      "role": "自有项目",
-      "description": "职位分析智能体。基于 FastAPI、Next.js 与 pgvector，探索岗位情报和简历匹配。"
+      "role": "Personal Project",
+      "description": "An AI agent for job intelligence and resume matching, built with FastAPI, Next.js and pgvector."
     },
     {
       "repository": "Tencent/WeKnora",
-      "role": "社区贡献",
-      "description": "参与关键词检索兼容与钉钉数据源同步修复，关注知识库的实际使用与可靠性。"
+      "role": "Contributor",
+      "description": "Contributing keyword search compatibility and reliable DingTalk data source synchronization."
     }
   ]
 }

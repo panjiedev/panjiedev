@@ -109,7 +109,7 @@ class ProfileTests(unittest.TestCase):
     def test_language_rounding_preserves_tail_and_one_hundred_percent(self):
         shares = profile.language_percentages({f"L{n}": n + 1 for n in range(12)})
         self.assertEqual(len(shares), 6)
-        self.assertEqual(shares[-1]["name"], "其他")
+        self.assertEqual(shares[-1]["name"], "Other")
         self.assertAlmostEqual(sum(r["percent"] for r in shares), 100)
         self.assertEqual(sum(r["bytes"] for r in shares), sum(range(1, 13)))
         self.assertEqual(profile.language_percentages({}), [])
@@ -130,7 +130,7 @@ class ProfileTests(unittest.TestCase):
                 ET.fromstring(source)
                 self.assertNotIn("<script>", source)
         for theme in ("light", "dark"):
-            self.assertIn("Star 9,876", next(value for path, value in outputs.items() if path.startswith("assets/project-2-") and path.endswith(f"-{theme}.svg")))
+            self.assertIn("Stars 9,876", next(value for path, value in outputs.items() if path.startswith("assets/project-2-") and path.endswith(f"-{theme}.svg")))
             self.assertIn("9,876", next(value for path, value in outputs.items() if path.startswith("assets/contributions-") and path.endswith(f"-{theme}.svg")))
         self.assertIn("UTC+8", outputs["README.md"])
         self.assertIn("2026-10-27 16:00", outputs["README.md"])
@@ -172,7 +172,7 @@ class ProfileTests(unittest.TestCase):
             self.assertEqual((root / "assets/manual.svg").read_text(), "keep unrelated image")
             self.assertEqual(json.loads((root / "assets/data.json").read_text()), data)
             self.assertIn("9,876", next((root / "assets").glob("contributions-*-light.svg")).read_text())
-            self.assertIn("Star 9,876", next((root / "assets").glob("project-2-*-light.svg")).read_text())
+            self.assertIn("Stars 9,876", next((root / "assets").glob("project-2-*-light.svg")).read_text())
 
     def test_daily_schedule_is_beijing_half_past_midnight(self):
         workflow = (ROOT / ".github/workflows/update-profile.yml").read_text()

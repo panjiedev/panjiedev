@@ -17,6 +17,7 @@ import re
 import subprocess
 import tempfile
 import time
+import textwrap
 from urllib.parse import urlencode
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,7 +27,7 @@ THEMES = {
     "light": {"bg": "#ffffff", "border": "#d1d9e0", "text": "#1f2328", "muted": "#59636e", "link": "#0969da", "green": "#1a7f37", "track": "#eaeef2"},
     "dark": {"bg": "#0d1117", "border": "#3d444d", "text": "#e6edf3", "muted": "#9198a1", "link": "#58a6ff", "green": "#3fb950", "track": "#21262d"},
 }
-LANG_COLORS = {"Java": "#b07219", "TypeScript": "#3178c6", "Python": "#3572a5", "JavaScript": "#b39700", "CSS": "#835bb5", "HTML": "#d84b2a", "Go": "#007d9c", "Shell": "#598116", "Rust": "#936348", "其他": "#7d8590"}
+LANG_COLORS = {"Java": "#b07219", "TypeScript": "#3178c6", "Python": "#3572a5", "JavaScript": "#b39700", "CSS": "#835bb5", "HTML": "#d84b2a", "Go": "#007d9c", "Shell": "#598116", "Rust": "#936348", "Other": "#7d8590"}
 FONT = "-apple-system,BlinkMacSystemFont,Segoe UI,Noto Sans,PingFang SC,Microsoft YaHei,sans-serif"
 
 
@@ -131,7 +132,7 @@ def language_percentages(counts):
         return []
     rows = sorted(counts.items(), key=lambda p: (-p[1], p[0]))
     if len(rows) > 6:
-        rows = rows[:5] + [("其他", sum(value for _, value in rows[5:]))]
+        rows = rows[:5] + [("Other", sum(value for _, value in rows[5:]))]
     total = sum(value for _, value in rows)
     raw = [value * 1000 / total for _, value in rows]
     units = [math.floor(value) for value in raw]
@@ -168,7 +169,7 @@ def collect(api, config, now):
                          "language": repo.get("language"), "stars": repo["stargazers_count"], "pushed_at": repo["pushed_at"],
                          "merged_prs": next((r["merged_prs"] for r in contributions if r["repository"].casefold() == repo["full_name"].casefold()), 0)})
     return {"schema_version": 1, "username": username, "generated_at": now.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "data_scope": "仅公开 GitHub 数据", "contributions": contributions,
+            "data_scope": "Public GitHub data only", "contributions": contributions,
             "languages": {"total_bytes": sum(totals.values()), "included_repositories": sorted(included), "bytes": dict(sorted(totals.items())), "shares": language_percentages(totals)},
             "featured": featured}
 
@@ -188,29 +189,18 @@ def truncate(value, limit):
 
 
 def wrap(value, limit=30, max_lines=3):
-    lines, current, units = [], "", 0
-    for char in value.replace("\n", " "):
-        width = 1 if ord(char) > 0x2e80 else .55
-        if current and units + width > limit:
-            lines.append(current)
-            current, units = "", 0
-            if len(lines) == max_lines:
-                lines[-1] = lines[-1].rstrip() + "…"
-                return lines
-        current += char
-        units += width
-    if current:
-        lines.append(current)
-    return lines
+    return textwrap.wrap(value.replace("\n", " "), width=round(limit / .55),
+                         max_lines=max_lines, placeholder="…", break_long_words=False,
+                         break_on_hyphens=False)
 
 
 def contribution_svg(data, theme, limit):
     rows = data["contributions"][:limit]
     total = sum(row["merged_prs"] for row in data["contributions"])
     height = 95 + max(1, len(rows)) * 42
-    out = svg_start(880, height, theme, "开源贡献", f"{total} 个外部项目已合并 PR；Star 是项目本身的当前 Star 数。")
-    out += [text(20, 30, "开源贡献", theme["text"], 17, 600), text(860, 30, f"{total} 个已合并 PR · {len(data['contributions'])} 个项目", theme["muted"], 12, anchor="end"),
-            text(20, 60, "项目", theme["muted"], 12), text(738, 60, "合并 PR", theme["muted"], 12, anchor="end"), text(860, 60, "项目 Star", theme["muted"], 12, anchor="end")]
+    out = svg_start(880, height, theme, "Open Source Contributions", f"{total} merged PRs in external public projects. Stars belong to each project.")
+    out += [text(20, 30, "Open Source Contributions", theme["text"], 17, 600), text(860, 30, f"{total} merged PRs · {len(data['contributions'])} {'project' if len(data['contributions']) == 1 else 'projects'}", theme["muted"], 12, anchor="end"),
+            text(20, 60, "Project", theme["muted"], 12), text(738, 60, "Merged PRs", theme["muted"], 12, anchor="end"), text(860, 60, "Project Stars", theme["muted"], 12, anchor="end")]
     maximum = max((r["merged_prs"] for r in rows), default=1)
     for i, row in enumerate(rows):
         y = 85 + i * 42
@@ -219,16 +209,16 @@ def contribution_svg(data, theme, limit):
                 f'<rect x="280" y="{y-9}" width="{380 * row["merged_prs"] / maximum:.2f}" height="12" rx="6" fill="{theme["green"]}"/>',
                 text(738, y + 2, row["merged_prs"], theme["text"], 13, 600, "end"), text(860, y + 2, f"{row['stars']:,}", theme["text"], 13, anchor="end")]
     if not rows:
-        out.append(text(20, 87, "暂无符合统计口径的已合并 PR", theme["muted"]))
-    out.append(text(20, height - 15, "仅公开外部项目；完整 PR 链接见贡献明细", theme["muted"], 11))
+        out.append(text(20, 87, "No merged PRs in external public projects yet.", theme["muted"]))
+    out.append(text(20, height - 15, "External public projects only. View contribution details for PR links.", theme["muted"], 11))
     return "".join(out) + "</svg>\n"
 
 
 def languages_svg(data, theme):
     rows = data["languages"]["shares"]
     height = 145 + 25 * math.ceil(len(rows) / 3)
-    out = svg_start(880, height, theme, "公开代码语言占比", "按 GitHub 语言字节数汇总；排除 Fork、课程练习、空仓库和主页自身。")
-    out += [text(20, 31, "公开代码语言占比", theme["text"], 17, 600), text(860, 31, "按代码字节数汇总", theme["muted"], 12, anchor="end")]
+    out = svg_start(880, height, theme, "Language Breakdown", "Public code by language bytes; excludes forks, tutorials, empty repositories and this profile.")
+    out += [text(20, 31, "Language Breakdown", theme["text"], 17, 600), text(860, 31, "By code bytes", theme["muted"], 12, anchor="end")]
     out.append('<defs><clipPath id="language-bar"><rect x="20" y="55" width="840" height="13" rx="6"/></clipPath></defs><g clip-path="url(#language-bar)">')
     x = 20
     for row in rows:
@@ -242,22 +232,22 @@ def languages_svg(data, theme):
         out += [f'<circle cx="{x+4}" cy="{y-4}" r="4" fill="{LANG_COLORS.get(row["name"], "#7d8590")}"/>',
                 text(x + 16, y, row["name"], theme["text"], 12), text(x + 250, y, f"{row['percent']:.1f}%", theme["muted"], 12, anchor="end")]
     if not rows:
-        out.append(text(20, 85, "暂无可统计的公开代码", theme["muted"]))
-    out += [text(20, height - 37, f"{len(data['languages']['included_repositories'])} 个公开自有代码仓库；不代表技能熟练程度", theme["muted"], 11),
-            text(20, height - 17, "排除 Fork、课程练习、空仓库和主页自身", theme["muted"], 11)]
+        out.append(text(20, 85, "No eligible public code yet.", theme["muted"]))
+    out += [text(20, height - 37, f"{len(data['languages']['included_repositories'])} public repositories owned by me. Code distribution, not a proficiency rating.", theme["muted"], 11),
+            text(20, height - 17, "Excludes forks, archived or empty repositories, tutorials and this profile.", theme["muted"], 11)]
     return "".join(out) + "</svg>\n"
 
 
 def project_svg(project, theme):
     out = svg_start(440, 185, theme, project["repository"], project["description"])
-    label = project["repository"].split("/")[1] if project["role"] == "自有项目" else project["repository"]
+    label = project["repository"].split("/")[1] if project["role"] == "Personal Project" else project["repository"]
     out += [text(17, 29, truncate(label, 29), theme["link"], 15, 600), text(423, 50, project["role"], theme["muted"], 11, anchor="end")]
     for i, line in enumerate(wrap(project["description"], limit=31, max_lines=3)):
         out.append(text(17, 73 + i * 21, line, theme["muted"], 12))
-    bottom = f"{project.get('language') or '公开项目'}"
-    if project["role"] == "社区贡献":
-        bottom = f"{project['merged_prs']} 个 PR 已合并"
-    out += [text(17, 166, bottom, theme["green"] if project["role"] == "社区贡献" else theme["muted"], 12), text(423, 166, f"Star {project['stars']:,}", theme["text"], 12, 500, "end")]
+    bottom = f"{project.get('language') or 'Public project'}"
+    if project["role"] == "Contributor":
+        bottom = f"{project['merged_prs']} merged PRs"
+    out += [text(17, 166, bottom, theme["green"] if project["role"] == "Contributor" else theme["muted"], 12), text(423, 166, f"Stars {project['stars']:,}", theme["text"], 12, 500, "end")]
     return "".join(out) + "</svg>\n"
 
 
@@ -281,18 +271,18 @@ def render_outputs(config, data):
             outputs[f"assets/{key}-{versions[key]}-{theme}.svg"] = outputs.pop(f"assets/{key}-{theme}.svg")
     stamp = datetime.fromisoformat(data["generated_at"].replace("Z", "+00:00")).astimezone(BEIJING).strftime("%Y-%m-%d %H:%M UTC+8")
     username = config["username"]
-    readme = ["<!-- 此文件由 scripts/update_profile.py 生成；简介及项目请修改 profile.json。 -->", f"# 你好，我是 {username}", "", config["introduction"], "", " · ".join(config["topics"]), "", "## 开源贡献", "", picture(username, "contributions", "公开外部项目合并 PR 与项目 Star 统计", version=versions["contributions"]), "", "<details>", "<summary>查看贡献明细</summary>", "", "| 项目 | 已合并 PR | 项目 Star |", "| --- | --- | ---: |"]
+    readme = ["<!-- Generated by scripts/update_profile.py. Edit profile.json to update the introduction and projects. -->", f"# Hi, I’m {username}", "", config["introduction"], "", " · ".join(config["topics"]), "", "## Open Source Contributions", "", picture(username, "contributions", "Merged PRs and project stars in external public repositories", version=versions["contributions"]), "", "<details>", "<summary>Explore contribution details</summary>", "", "| Project | Merged PRs | Project Stars |", "| --- | --- | ---: |"]
     for row in data["contributions"]:
         name = row["repository"]
-        links = "、".join(f"[#{p['number']}]({p['url']})" for p in row["pull_requests"])
+        links = ", ".join(f"[#{p['number']}]({p['url']})" for p in row["pull_requests"])
         readme.append(f"| [{name}](https://github.com/{name}) | {links} | {row['stars']:,} |")
     if not data["contributions"]:
-        readme.append("| 暂无符合统计口径的记录 | — | — |")
-    readme += ["", "仅统计公开外部项目已合并的 PR，排除本人仓库。Star 为该项目本身的数量。", "", "</details>", "", "## 公开代码语言占比", "", picture(username, "languages", "公开代码按 GitHub Languages API 字节数汇总的语言占比", version=versions["languages"]), "", "<details>", "<summary>统计范围</summary>", "", "当前纳入：" + ("、".join(f"[`{repo}`](https://github.com/{repo})" for repo in data["languages"]["included_repositories"]) or "暂无"), "", "排除 Fork、已归档、空仓库、主页自身及 `skills-*` 课程练习。语言占比基于公开代码字节数，不代表技能熟练程度。", "", "</details>", "", "## 项目与实践", "", "<div align=\"center\">"]
+        readme.append("| No eligible contributions yet | — | — |")
+    readme += ["", "Merged PRs in external public repositories; my own repositories are excluded. Stars belong to each project.", "", "</details>", "", "## Language Breakdown", "", picture(username, "languages", "Public code language breakdown by GitHub Languages API byte counts", version=versions["languages"]), "", "<details>", "<summary>How these numbers are calculated</summary>", "", "Repositories included: " + (", ".join(f"[`{repo}`](https://github.com/{repo})" for repo in data["languages"]["included_repositories"]) or "None yet"), "", "Based on public code bytes reported by the GitHub Languages API. Excludes forks, archived or empty repositories, this profile and `skills-*` tutorials. This reflects code distribution, not proficiency.", "", "</details>", "", "## Selected Projects", "", "<div align=\"center\">"]
     for i, project in enumerate(data["featured"]):
         name = project["repository"]
-        readme.append(f'<a href="https://github.com/{name}">\n{picture(username, f"project-{i+1}", name + " · " + project["role"] + " · Star " + str(project["stars"]), "400", version=versions[f"project-{i+1}"])}\n</a>')
-    readme += ["</div>", "", f"<sub>仅公开 GitHub 数据 · 更新于 {stamp} · 每日北京时间 00:30 自动刷新 · [维护说明](MAINTAINING.md)</sub>", ""]
+        readme.append(f'<a href="https://github.com/{name}">\n{picture(username, f"project-{i+1}", name + " · " + project["role"] + " · Stars " + str(project["stars"]), "400", version=versions[f"project-{i+1}"])}\n</a>')
+    readme += ["</div>", "", f"<sub>Public GitHub data only · Updated {stamp} · Refreshes daily at 00:30 Beijing time · [How this works](MAINTAINING.md)</sub>", ""]
     outputs["README.md"] = "\n".join(readme)
     outputs["assets/data.json"] = json.dumps(data, ensure_ascii=False, indent=2) + "\n"
     return outputs
