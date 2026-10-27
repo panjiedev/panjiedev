@@ -260,9 +260,10 @@ def project_svg(project, theme):
     return "".join(out) + "</svg>\n"
 
 
-def picture(username, name, alt, width="100%"):
+def picture(username, name, alt, width="100%", version=""):
     base = f"https://raw.githubusercontent.com/{username}/{username}/main/assets/{name}"
-    return f'<picture>\n  <source media="(prefers-color-scheme: dark)" srcset="{base}-dark.svg">\n  <img src="{base}-light.svg" alt="{escape(alt, quote=True)}" width="{width}">\n</picture>'
+    suffix = "?" + urlencode({"v": version}) if version else ""
+    return f'<picture>\n  <source media="(prefers-color-scheme: dark)" srcset="{base}-dark.svg{suffix}">\n  <img src="{base}-light.svg{suffix}" alt="{escape(alt, quote=True)}" width="{width}">\n</picture>'
 
 
 def render_outputs(config, data):
@@ -274,17 +275,17 @@ def render_outputs(config, data):
             outputs[f"assets/project-{i+1}-{name}.svg"] = project_svg(project, theme)
     stamp = datetime.fromisoformat(data["generated_at"].replace("Z", "+00:00")).astimezone(BEIJING).strftime("%Y-%m-%d %H:%M UTC+8")
     username = config["username"]
-    readme = ["<!-- 此文件由 scripts/update_profile.py 生成；简介及项目请修改 profile.json。 -->", f"# 你好，我是 {username}", "", config["introduction"], "", " · ".join(config["topics"]), "", "## 开源贡献", "", picture(username, "contributions", "公开外部项目合并 PR 与项目 Star 统计"), "", "<details>", "<summary>查看贡献明细</summary>", "", "| 项目 | 已合并 PR | 项目 Star |", "| --- | --- | ---: |"]
+    readme = ["<!-- 此文件由 scripts/update_profile.py 生成；简介及项目请修改 profile.json。 -->", f"# 你好，我是 {username}", "", config["introduction"], "", " · ".join(config["topics"]), "", "## 开源贡献", "", picture(username, "contributions", "公开外部项目合并 PR 与项目 Star 统计", version=data["generated_at"]), "", "<details>", "<summary>查看贡献明细</summary>", "", "| 项目 | 已合并 PR | 项目 Star |", "| --- | --- | ---: |"]
     for row in data["contributions"]:
         name = row["repository"]
         links = "、".join(f"[#{p['number']}]({p['url']})" for p in row["pull_requests"])
         readme.append(f"| [{name}](https://github.com/{name}) | {links} | {row['stars']:,} |")
     if not data["contributions"]:
         readme.append("| 暂无符合统计口径的记录 | — | — |")
-    readme += ["", "仅统计公开外部项目已合并的 PR，排除本人仓库。Star 为该项目本身的数量。", "", "</details>", "", "## 公开代码语言占比", "", picture(username, "languages", "公开代码按 GitHub Languages API 字节数汇总的语言占比"), "", "<details>", "<summary>统计范围</summary>", "", "当前纳入：" + ("、".join(f"[`{repo}`](https://github.com/{repo})" for repo in data["languages"]["included_repositories"]) or "暂无"), "", "排除 Fork、已归档、空仓库、主页自身及 `skills-*` 课程练习。语言占比基于公开代码字节数，不代表技能熟练程度。", "", "</details>", "", "## 项目与实践", "", "<div align=\"center\">"]
+    readme += ["", "仅统计公开外部项目已合并的 PR，排除本人仓库。Star 为该项目本身的数量。", "", "</details>", "", "## 公开代码语言占比", "", picture(username, "languages", "公开代码按 GitHub Languages API 字节数汇总的语言占比", version=data["generated_at"]), "", "<details>", "<summary>统计范围</summary>", "", "当前纳入：" + ("、".join(f"[`{repo}`](https://github.com/{repo})" for repo in data["languages"]["included_repositories"]) or "暂无"), "", "排除 Fork、已归档、空仓库、主页自身及 `skills-*` 课程练习。语言占比基于公开代码字节数，不代表技能熟练程度。", "", "</details>", "", "## 项目与实践", "", "<div align=\"center\">"]
     for i, project in enumerate(data["featured"]):
         name = project["repository"]
-        readme.append(f'<a href="https://github.com/{name}">\n{picture(username, f"project-{i+1}", name + " · " + project["role"] + " · Star " + str(project["stars"]), "400")}\n</a>')
+        readme.append(f'<a href="https://github.com/{name}">\n{picture(username, f"project-{i+1}", name + " · " + project["role"] + " · Star " + str(project["stars"]), "400", version=data["generated_at"])}\n</a>')
     readme += ["</div>", "", f"<sub>仅公开 GitHub 数据 · 更新于 {stamp} · 每日北京时间 00:30 自动刷新 · [维护说明](MAINTAINING.md)</sub>", ""]
     outputs["README.md"] = "\n".join(readme)
     outputs["assets/data.json"] = json.dumps(data, ensure_ascii=False, indent=2) + "\n"

@@ -135,6 +135,7 @@ class ProfileTests(unittest.TestCase):
         self.assertIn("UTC+8", outputs["README.md"])
         self.assertIn("2026-10-27 16:00", outputs["README.md"])
         self.assertIn('width="400"', outputs["README.md"])
+        self.assertEqual(outputs["README.md"].count(".svg?v=2026-10-27T08%3A00%3A00Z"), 8)
 
     def test_fetch_failure_preserves_all_previous_output(self):
         class Failure(FakeAPI):

@@ -28,3 +28,5 @@ git diff --check
 ```
 
 本地更新只读取公开 API 并写本地文件，不自动推送。`assets/data.json` 是本次 SVG 和 README 使用的同一份快照。
+
+图片链接带有快照版本，减少 GitHub 图片缓存造成的文字与图表统计暂时不一致。

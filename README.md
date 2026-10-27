@@ -8,8 +8,8 @@ AI 应用 · 知识工程 · Python · Java · TypeScript
 ## 开源贡献
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/contributions-dark.svg">
-  <img src="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/contributions-light.svg" alt="公开外部项目合并 PR 与项目 Star 统计" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/contributions-dark.svg?v=2026-10-27T08%3A48%3A16Z">
+  <img src="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/contributions-light.svg?v=2026-10-27T08%3A48%3A16Z" alt="公开外部项目合并 PR 与项目 Star 统计" width="100%">
 </picture>
 
 <details>
@@ -17,7 +17,7 @@ AI 应用 · 知识工程 · Python · Java · TypeScript
 
 | 项目 | 已合并 PR | 项目 Star |
 | --- | --- | ---: |
-| [Tencent/WeKnora](https://github.com/Tencent/WeKnora) | [#4505](https://github.com/Tencent/WeKnora/pull/4505)、[#4502](https://github.com/Tencent/WeKnora/pull/4502) | 35,611 |
+| [Tencent/WeKnora](https://github.com/Tencent/WeKnora) | [#4505](https://github.com/Tencent/WeKnora/pull/4505)、[#4502](https://github.com/Tencent/WeKnora/pull/4502) | 35,612 |
 
 仅统计公开外部项目已合并的 PR，排除本人仓库。Star 为该项目本身的数量。
 
@@ -26,8 +26,8 @@ AI 应用 · 知识工程 · Python · Java · TypeScript
 ## 公开代码语言占比
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/languages-dark.svg">
-  <img src="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/languages-light.svg" alt="公开代码按 GitHub Languages API 字节数汇总的语言占比" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/languages-dark.svg?v=2026-10-27T08%3A48%3A16Z">
+  <img src="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/languages-light.svg?v=2026-10-27T08%3A48%3A16Z" alt="公开代码按 GitHub Languages API 字节数汇总的语言占比" width="100%">
 </picture>
 
 <details>
@@ -44,16 +44,16 @@ AI 应用 · 知识工程 · Python · Java · TypeScript
 <div align="center">
 <a href="https://github.com/panjiedev/job-intel-agent">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/project-1-dark.svg">
-  <img src="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/project-1-light.svg" alt="panjiedev/job-intel-agent · 自有项目 · Star 1" width="400">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/project-1-dark.svg?v=2026-10-27T08%3A48%3A16Z">
+  <img src="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/project-1-light.svg?v=2026-10-27T08%3A48%3A16Z" alt="panjiedev/job-intel-agent · 自有项目 · Star 1" width="400">
 </picture>
 </a>
 <a href="https://github.com/Tencent/WeKnora">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/project-2-dark.svg">
-  <img src="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/project-2-light.svg" alt="Tencent/WeKnora · 社区贡献 · Star 35611" width="400">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/project-2-dark.svg?v=2026-10-27T08%3A48%3A16Z">
+  <img src="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/project-2-light.svg?v=2026-10-27T08%3A48%3A16Z" alt="Tencent/WeKnora · 社区贡献 · Star 35612" width="400">
 </picture>
 </a>
 </div>
 
-<sub>仅公开 GitHub 数据 · 更新于 2026-10-27 16:46 UTC+8 · 每日北京时间 00:30 自动刷新 · [维护说明](MAINTAINING.md)</sub>
+<sub>仅公开 GitHub 数据 · 更新于 2026-10-27 16:48 UTC+8 · 每日北京时间 00:30 自动刷新 · [维护说明](MAINTAINING.md)</sub>
