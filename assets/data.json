@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "username": "panjiedev",
-  "generated_at": "2026-11-17T23:36:43Z",
+  "generated_at": "2026-11-18T23:01:58Z",
   "data_scope": "Public GitHub data only",
   "contributions": [
     {
       "repository": "Tencent/WeKnora",
       "merged_prs": 2,
-      "stars": 37661,
+      "stars": 37751,
       "pull_requests": [
         {
           "number": 4505,
@@ -76,8 +76,8 @@
       "role": "Contributor",
       "description": "Contributing keyword search compatibility and reliable DingTalk data source synchronization.",
       "language": "Go",
-      "stars": 37661,
-      "pushed_at": "2026-11-16T13:29:37Z",
+      "stars": 37751,
+      "pushed_at": "2026-11-18T12:55:41Z",
       "merged_prs": 2
     }
   ]
