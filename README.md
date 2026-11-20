@@ -8,8 +8,8 @@ Applied AI · RAG & Knowledge Systems · Python · Java · TypeScript
 ## Open Source Contributions
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/contributions-5b689fa0a1ea5a3e-dark.svg">
-  <img src="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/contributions-5b689fa0a1ea5a3e-light.svg" alt="Merged PRs and project stars in external public repositories" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/contributions-25c4698c3d100a85-dark.svg">
+  <img src="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/contributions-25c4698c3d100a85-light.svg" alt="Merged PRs and project stars in external public repositories" width="100%">
 </picture>
 
 <details>
@@ -17,7 +17,7 @@ Applied AI · RAG & Knowledge Systems · Python · Java · TypeScript
 
 | Project | Merged PRs | Project Stars |
 | --- | --- | ---: |
-| [Tencent/WeKnora](https://github.com/Tencent/WeKnora) | [#4505](https://github.com/Tencent/WeKnora/pull/4505), [#4502](https://github.com/Tencent/WeKnora/pull/4502) | 37,812 |
+| [Tencent/WeKnora](https://github.com/Tencent/WeKnora) | [#4505](https://github.com/Tencent/WeKnora/pull/4505), [#4502](https://github.com/Tencent/WeKnora/pull/4502) | 37,901 |
 
 Merged PRs in external public repositories; my own repositories are excluded. Stars belong to each project.
 
@@ -50,10 +50,10 @@ Based on public code bytes reported by the GitHub Languages API. Excludes forks,
 </a>
 <a href="https://github.com/Tencent/WeKnora">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/project-2-cb5bee0d8fbfefc3-dark.svg">
-  <img src="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/project-2-cb5bee0d8fbfefc3-light.svg" alt="Tencent/WeKnora · Contributor · Stars 37812" width="400">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/project-2-039a0705ec2b283f-dark.svg">
+  <img src="https://raw.githubusercontent.com/panjiedev/panjiedev/main/assets/project-2-039a0705ec2b283f-light.svg" alt="Tencent/WeKnora · Contributor · Stars 37901" width="400">
 </picture>
 </a>
 </div>
 
-<sub>Public GitHub data only · Updated 2026-11-20 07:10 UTC+8 · Refreshes daily at 00:30 Beijing time · [How this works](MAINTAINING.md)</sub>
+<sub>Public GitHub data only · Updated 2026-11-21 06:46 UTC+8 · Refreshes daily at 00:30 Beijing time · [How this works](MAINTAINING.md)</sub>
